@@ -115,7 +115,7 @@ Chicken is an esoteric language by Torbjörn Söderstedt which consists of only 
 This repository is inspired from the following function
 
 
-```javasript
+```javascript
 function chicken(CHICKEN, Chicken) {
     Chicken &&( chicken. chicken =[,
     CHICKEN, CHICKEN = Chicken = chicken.
