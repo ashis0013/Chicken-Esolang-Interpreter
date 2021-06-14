@@ -112,8 +112,20 @@ Chicken is an esoteric language by Torbjörn Söderstedt which consists of only 
 </td></tr></tbody></table>
 
 <br/>
-This repository is inspired from the following function
 
+
+## Usage
+
+To use this interpreter simply compile the main.cpp file without any external libraries. The executable takse two command line argument: first one is the path to input program and second one is the user input.
+
+```bash
+g++ main.cpp -o chicken
+./chicken progs/99chickens.chic 9
+```
+
+## References
+
+This repository is inspired from the following function
 
 ```javascript
 function chicken(CHICKEN, Chicken) {
