@@ -1,4 +1,4 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 class CVM {
@@ -40,6 +40,36 @@ private:
         sysStack[0].intData++;
         return op;
     }
+    int myAtoi(string str) {
+        long ret = 0;
+        int sign = 1;
+        stack<int> s;
+        string::iterator i = str.begin();
+        while(*i == ' ')i++;
+        if(i == str.end())return 0;
+        if(*i != '+' && *i != '-' && int(*i - '0') > 9)return 0;
+        if(*i == '+')i++;
+        else if(*i == '-'){
+            sign = -1;
+            i++;
+        }
+        while(int(*i - '0') == 0){i++;if(i == str.end())break;}
+        while(int(*i - '0') <10 && int(*i - '0') > -1){
+            s.push(int(*i - '0'));
+            i++;
+            if(i == str.end())break;
+        }
+        int n = 0;
+        if(s.size() >10)return (sign == -1)?INT_MIN:INT_MAX;
+        while(!s.empty()){
+            ret += pow(10,n)*s.top();
+            s.pop();n++;
+        }
+        ret *= sign;
+        if(ret < INT_MIN)return INT_MIN;
+        if(ret > INT_MAX)return INT_MAX;
+        return int(ret);
+    }
 
     void exec(int opcode) {
         if(opcode == chicken) {
@@ -50,22 +80,30 @@ private:
             sysStack.pop_back();
             elem a = sysStack.back();
             sysStack.pop_back();
-            if(a.intOrStr)sysStack.push_back(elem(a.intData + b.intData));
-            else sysStack.push_back(elem(0,a.strData + b.strData));
+            if(a.intOrStr && b.intOrStr)sysStack.push_back(elem(a.intData + b.intData));
+            else {
+                string aval = (a.intOrStr)?to_string(a.intData):a.strData;
+                string bval = (b.intOrStr)?to_string(b.intData):b.strData;
+                sysStack.push_back(elem(0,aval + bval));
+            }
         }
         else if(opcode == fox) {
             elem b = sysStack.back();
             sysStack.pop_back();
             elem a = sysStack.back();
             sysStack.pop_back();
-            sysStack.push_back(elem(a.intData - b.intData));
+            int aval = (a.intOrStr)?a.intData:myAtoi(a.strData);
+            int bval = (b.intOrStr)?b.intData:myAtoi(b.strData);
+            sysStack.push_back(elem(aval-bval));
         }
         else if(opcode == rooster) {
             elem b = sysStack.back();
             sysStack.pop_back();
             elem a = sysStack.back();
             sysStack.pop_back();
-            sysStack.push_back(elem(a.intData * b.intData));
+            int aval = (a.intOrStr)?a.intData:myAtoi(a.strData);
+            int bval = (b.intOrStr)?b.intData:myAtoi(b.strData);
+            sysStack.push_back(elem(aval*bval));
         }
         else if(opcode == compare) {
             elem a = sysStack.back();
@@ -75,10 +113,14 @@ private:
             sysStack.push_back(elem((a.intData == b.intData) && (a.strData == b.strData)));
         }
         else if(opcode==pick) {
+            int addr = sysStack.back().intData;
+            sysStack.pop_back();
             if(next() == 0) {
-                int addr = sysStack.back().intData;
-                sysStack.pop_back();
                 sysStack.push_back(sysStack[addr]);
+            }
+            else {
+                char val = sysStack[1].strData[addr];
+                sysStack.push_back(elem(0,string(1,val)));
             }
         }
         else if(opcode==peck) {
@@ -91,13 +133,12 @@ private:
         else if(opcode == fr) {
             int offset = sysStack.back().intData;
             sysStack.pop_back();
-            int condition = sysStack.back().intData;
+            bool condition = (sysStack.back().intData!=0 || sysStack.back().strData.length()!=0);
             sysStack.pop_back();
             if(condition)sysStack[0].intData += offset;
         }
         else if(opcode == bbq) {
             char ascii = sysStack.back().intData;
-            //cout << sysStack.back().intData<< "->" << ascii << endl;
             sysStack.pop_back();
             sysStack.push_back(elem(0,string(1,ascii)));
         }
@@ -123,7 +164,7 @@ public:
         for(int i=progLen+2;i<sysStack.size();i++) {
             elem x = sysStack[i];
             if(x.intOrStr) cout << x.intData << ' ';
-            else cout << x.strData << ' ';
+            else cout <<'\'' << x.strData << "\' ";
         }
         cout << endl;
     }
@@ -183,8 +224,6 @@ int main(int argc, char **argv) {
     if(argc > 2)input = argv[2];
 
     vector<int> opcodes = parse(filename);
-    //for(int i:opcodes)cout << i <<',';
     CVM vm(opcodes, input);
-    //vm.display();
     vm.run();
 }
