@@ -116,10 +116,10 @@ Chicken is an esoteric language by Torbjörn Söderstedt which consists of only 
 
 ## Usage
 
-To use this interpreter simply compile the main.cpp file without any external libraries. The executable takse two command line argument: first one is the path to input program and second one is the user input.
+To use this interpreter simply compile the cpp files without any external libraries. A makefile is attached for convinience. The executable takes two command line argument: first one is the path to input program and second one is the user input.
 
 ```bash
-g++ main.cpp -o chicken
+make
 ./chicken progs/99chickens.chic 9
 ```
 
