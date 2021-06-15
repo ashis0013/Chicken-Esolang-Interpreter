@@ -1,23 +1,10 @@
 #include <bits/stdc++.h>
+#include "elem.h"
 using namespace std;
 
 class CVM {
 private:
-    class elem {
-    public:
-        bool intOrStr;
-        int intData;
-        string strData;
-
-        elem(int i=0, string s="") {
-            if(i!=0 || s.length()==0)intOrStr = true;
-            else intOrStr=false;
-            intData = i;
-            strData = s;
-        }
-    };
-
-    vector<elem> sysStack;
+    vector<Elem> sysStack;
     int sp;
     int ip;
     int progLen;
@@ -73,44 +60,44 @@ private:
 
     void exec(int opcode) {
         if(opcode == chicken) {
-            sysStack.push_back(elem(0,"chicken"));
+            sysStack.push_back(Elem("chicken"));
         }
         else if(opcode == add) {
-            elem b = sysStack.back();
+            Elem b = sysStack.back();
             sysStack.pop_back();
-            elem a = sysStack.back();
+            Elem a = sysStack.back();
             sysStack.pop_back();
-            if(a.intOrStr && b.intOrStr)sysStack.push_back(elem(a.intData + b.intData));
+            if(a.intOrStr && b.intOrStr)sysStack.push_back(Elem(a.intData + b.intData));
             else {
                 string aval = (a.intOrStr)?to_string(a.intData):a.strData;
                 string bval = (b.intOrStr)?to_string(b.intData):b.strData;
-                sysStack.push_back(elem(0,aval + bval));
+                sysStack.push_back(Elem(aval + bval));
             }
         }
         else if(opcode == fox) {
-            elem b = sysStack.back();
+            Elem b = sysStack.back();
             sysStack.pop_back();
-            elem a = sysStack.back();
+            Elem a = sysStack.back();
             sysStack.pop_back();
             int aval = (a.intOrStr)?a.intData:myAtoi(a.strData);
             int bval = (b.intOrStr)?b.intData:myAtoi(b.strData);
-            sysStack.push_back(elem(aval-bval));
+            sysStack.push_back(Elem(aval-bval));
         }
         else if(opcode == rooster) {
-            elem b = sysStack.back();
+            Elem b = sysStack.back();
             sysStack.pop_back();
-            elem a = sysStack.back();
+            Elem a = sysStack.back();
             sysStack.pop_back();
             int aval = (a.intOrStr)?a.intData:myAtoi(a.strData);
             int bval = (b.intOrStr)?b.intData:myAtoi(b.strData);
-            sysStack.push_back(elem(aval*bval));
+            sysStack.push_back(Elem(aval*bval));
         }
         else if(opcode == compare) {
-            elem a = sysStack.back();
+            Elem a = sysStack.back();
             sysStack.pop_back();
-            elem b = sysStack.back();
+            Elem b = sysStack.back();
             sysStack.pop_back();
-            sysStack.push_back(elem((a.intData == b.intData) && (a.strData == b.strData)));
+            sysStack.push_back(Elem((a.intData == b.intData) && (a.strData == b.strData)));
         }
         else if(opcode==pick) {
             int addr = sysStack.back().intData;
@@ -120,13 +107,13 @@ private:
             }
             else {
                 char val = sysStack[1].strData[addr];
-                sysStack.push_back(elem(0,string(1,val)));
+                sysStack.push_back(Elem(string(1,val)));
             }
         }
         else if(opcode==peck) {
             int addr = sysStack.back().intData;
             sysStack.pop_back();
-            elem val = sysStack.back();
+            Elem val = sysStack.back();
             sysStack.pop_back();
             sysStack[addr] = val;
         }
@@ -140,7 +127,7 @@ private:
         else if(opcode == bbq) {
             char ascii = sysStack.back().intData;
             sysStack.pop_back();
-            sysStack.push_back(elem(0,string(1,ascii)));
+            sysStack.push_back(Elem(string(1,ascii)));
         }
         else {
             sysStack.push_back(opcode - 10);
@@ -152,17 +139,17 @@ public:
         sp = 2;
         progLen = opcodes.size();
         input = inp;
-        sysStack.push_back(elem(sp));
-        sysStack.push_back(elem(0,inp));
+        sysStack.push_back(Elem(sp));
+        sysStack.push_back(Elem(inp));
         for(int op:opcodes) {
-            sysStack.push_back(elem(op));
+            sysStack.push_back(Elem(op));
         }
     }
 
     void display() {
         cout << sysStack[0].intData <<": <" << sysStack[sysStack[0].intData].intData << "> ";
         for(int i=progLen+2;i<sysStack.size();i++) {
-            elem x = sysStack[i];
+            Elem x = sysStack[i];
             if(x.intOrStr) cout << x.intData << ' ';
             else cout <<'\'' << x.strData << "\' ";
         }
@@ -176,7 +163,7 @@ public:
             exec(opcode);
             //display();
         }
-        elem e = sysStack.back();
+        Elem e = sysStack.back();
         if(e.intOrStr) cout<< e.intData << endl;
         else cout << e.strData << endl;
     }
