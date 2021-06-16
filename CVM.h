@@ -6,6 +6,7 @@ using namespace std;
 #ifndef CVM_H
 #define CVM_H
 
+// The Chicken Virtual Machine y'all
 class CVM {
 private:
     vector<Elem> sysStack;
@@ -27,7 +28,6 @@ private:
     };
 
     int next();
-    int myAtoi(string str);
     void display();
     void exec(int opcode);
 

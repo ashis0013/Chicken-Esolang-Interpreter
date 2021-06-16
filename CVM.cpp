@@ -1,9 +1,6 @@
 #include <vector>
 #include <string>
-#include <stack>
-#include <climits>
 #include <iostream>
-#include <math.h>
 #include "elem.h"
 #include "CVM.h"
 using namespace std;
@@ -24,36 +21,6 @@ int CVM::next() {
     sysStack[0].intData++;
     return op;
 }
-int CVM::myAtoi(string str) {
-    long ret = 0;
-    int sign = 1;
-    stack<int> s;
-    string::iterator i = str.begin();
-    while(*i == ' ')i++;
-    if(i == str.end())return 0;
-    if(*i != '+' && *i != '-' && int(*i - '0') > 9)return 0;
-    if(*i == '+')i++;
-    else if(*i == '-'){
-        sign = -1;
-        i++;
-    }
-    while(int(*i - '0') == 0){i++;if(i == str.end())break;}
-    while(int(*i - '0') <10 && int(*i - '0') > -1){
-        s.push(int(*i - '0'));
-        i++;
-        if(i == str.end())break;
-    }
-    int n = 0;
-    if(s.size() >10)return (sign == -1)?INT_MIN:INT_MAX;
-    while(!s.empty()){
-        ret += pow(10,n)*s.top();
-        s.pop();n++;
-    }
-    ret *= sign;
-    if(ret < INT_MIN)return INT_MIN;
-    if(ret > INT_MAX)return INT_MAX;
-    return int(ret);
-}
 
 void CVM::exec(int opcode) {
     if(opcode == chicken) {
@@ -64,30 +31,21 @@ void CVM::exec(int opcode) {
         sysStack.pop_back();
         Elem a = sysStack.back();
         sysStack.pop_back();
-        if(a.intOrStr && b.intOrStr)sysStack.push_back(Elem(a.intData + b.intData));
-        else {
-            string aval = (a.intOrStr)?to_string(a.intData):a.strData;
-            string bval = (b.intOrStr)?to_string(b.intData):b.strData;
-            sysStack.push_back(Elem(aval + bval));
-        }
+        sysStack.push_back(a+b);
     }
     else if(opcode == fox) {
         Elem b = sysStack.back();
         sysStack.pop_back();
         Elem a = sysStack.back();
         sysStack.pop_back();
-        int aval = (a.intOrStr)?a.intData:myAtoi(a.strData);
-        int bval = (b.intOrStr)?b.intData:myAtoi(b.strData);
-        sysStack.push_back(Elem(aval-bval));
+        sysStack.push_back(a-b);
     }
     else if(opcode == rooster) {
         Elem b = sysStack.back();
         sysStack.pop_back();
         Elem a = sysStack.back();
         sysStack.pop_back();
-        int aval = (a.intOrStr)?a.intData:myAtoi(a.strData);
-        int bval = (b.intOrStr)?b.intData:myAtoi(b.strData);
-        sysStack.push_back(Elem(aval*bval));
+        sysStack.push_back(a*b);
     }
     else if(opcode == compare) {
         Elem a = sysStack.back();
