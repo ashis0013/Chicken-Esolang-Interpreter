@@ -116,11 +116,10 @@ Chicken is an esoteric language by Torbjörn Söderstedt which consists of only 
 
 ## Usage
 
-To use this interpreter simply compile the cpp files without any external libraries. A makefile is attached for convinience. The executable takes two command line argument: first one is the path to input program and second one is the user input.
+To use this you need jdk-11 and kotlinc installed in your machine. Simply run the `run.sh` script to get things going
 
 ```bash
-make
-./chicken progs/99chickens.chic 9
+./run.sh progs/99chickens.chic 9
 ```
 
 ## References
